@@ -199,14 +199,14 @@ on:
   repository_dispatch: # This event will only trigger a workflow run if the workflow file exists on the default branch.
     types:
       - test_result
-  # ┌───────────── minute (0 - 59)
-  # │ ┌───────────── hour (0 - 23)
-  # │ │ ┌───────────── day of the month (1 - 31)
-  # │ │ │ ┌───────────── month (1 - 12)
-  # │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
-  # │ │ │ │ │
-  # * * * * *
   schedule:
+             # ┌───────────── minute (0 - 59)
+             # │ ┌───────────── hour (0 - 23)
+             # │ │ ┌───────────── day of the month (1 - 31)
+             # │ │ │ ┌───────────── month (1 - 12)
+             # │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+             # │ │ │ │ │
+             # * * * * *
     - cron: '*/5 * * * *'
   status:
   watch:
@@ -231,14 +231,14 @@ on:
         description: 'Override version (optional, format: YYYY.M.YYYYMMDDHHII)'
         required: false
         type: string
-  # workflow_run:
-  #   branches: 
-  #     - '*'
-  #   types: 
-  #     - completed
-  #     - in_progress
-  #     - requested
-  #   workflows: []
+  workflow_run:
+    branches: 
+      - '**'
+    types: 
+      - completed
+      - in_progress
+      - requested
+    workflows: [Simpleton]
 
 permissions:
     actions: none
@@ -361,6 +361,8 @@ jobs:
         timeout-minutes: 1
         working-directory: .
       - uses: docker://library/postgres@sha256:6cf6142afacfa89fb28b894d6391c7dcbf6523c33178bdc33e782b3b533a9342
+        env:
+          POSTGRES_PASSWORD: postgres
         continue-on-error: true
       - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
       - run: sleep 30
