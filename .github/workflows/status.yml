@@ -3,30 +3,30 @@ name: Status
 
 on:
   status:
-  # check_run:
-  #   types:
-  #     - completed
-permissions:
-  actions: none
-  attestations: none
-  checks: none
-  contents: none
-  deployments: none
-  discussions: none
-  id-token: none
-  issues: none
-  models: none
-  packages: none
-  pages: none
-  pull-requests: none
-  repository-projects: none
-  security-events: none
-  statuses: read
+  check_run:
+     types:
+       - completed
+permissions: write-all
+  # actions: none
+  # attestations: none
+  # checks: none
+  # contents: none
+  # deployments: none
+  # discussions: none
+  # id-token: none
+  # issues: none
+  # models: none
+  # packages: none
+  # pages: none
+  # pull-requests: none
+  # repository-projects: none
+  # security-events: none
+  # statuses: read
 
 jobs:
   debug:
-    permissions:
-      statuses: read
+    # permissions:
+    #   statuses: read
     runs-on: ubuntu-latest
     steps:
       - run: |
