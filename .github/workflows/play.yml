@@ -328,7 +328,7 @@ jobs:
           echo version="BLAST" >> "$GITHUB_OUTPUT"
           echo "${SCOTT:-s}, ${AMBER:-a}, ${JOHN:-j}, ${GRACE:-g}, ${{ matrix.WILLIAM }}"
           echo "::group::GITHUB object"
-          echo "${{ fromJson(github) }}"
+          echo "collapse this"
           echo "::endgroup::"
 
       # - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
