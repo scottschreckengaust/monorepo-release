@@ -1,6 +1,6 @@
 ---
 name: PlayTime
-run-name: ${{ github.workflow}}-${{ github.workflow_sha }} by @${{ github.triggering_actor }} for @${{ github.actor }}
+run-name: ${{ github.workflow}} by @${{ github.triggering_actor }} for @${{ github.actor }}
 description: This is a playful workflow for simple testing
 
 concurrency:
@@ -199,14 +199,14 @@ on:
   repository_dispatch: # This event will only trigger a workflow run if the workflow file exists on the default branch.
     types:
       - test_result
+  # ┌───────────── minute (0 - 59)
+  # │ ┌───────────── hour (0 - 23)
+  # │ │ ┌───────────── day of the month (1 - 31)
+  # │ │ │ ┌───────────── month (1 - 12)
+  # │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+  # │ │ │ │ │
+  # * * * * *
   schedule:
-           # ┌───────────── minute (0 - 59)
-           # │ ┌───────────── hour (0 - 23)
-           # │ │ ┌───────────── day of the month (1 - 31)
-           # │ │ │ ┌───────────── month (1 - 12)
-           # │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
-           # │ │ │ │ │
-           # * * * * *
     - cron: '*/5 * * * *'
   status:
   watch:
@@ -259,7 +259,7 @@ permissions:
 
 jobs:
   debug:
-    cancel-timeout-minutes: 1
+    cancel-timeout-minutes: 2
     concurrency:
       cancel-in-progress: true
       group: ${{ github.workflow}}-${{ github.event_name}}-${{ github.ref}}
@@ -270,7 +270,7 @@ jobs:
     #   env:
     #     JOHN: "john"
     #   image: 
-    #   options: 
+    #   options:
     #   ports:
     #     - 8080
     #   volumes:
@@ -282,9 +282,9 @@ jobs:
     # #     working-directory: .
     env:
       AMBER: "amber"
-    # # environment: 
+    environment: fancy
     if: true || always() || cancelled() || failure() || success() # github, inputs, vars, needs
-    name: Job Name
+    name: Job Name (${{ matrix.WILLIAM }}) - ${{ github.event_name }}
     needs: []
     outputs:
       version: ${{ steps.stepper.outputs.version }}
@@ -306,15 +306,15 @@ jobs:
       security-events: none
       statuses: none
     runs-on: ubuntu-latest
-    # services:
-    #   postgres:
-    #     image: postgres
-    #     env:
-    #       POSTGRES_PASSWORD: postgres
-    #     options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-    #     ports:
-    #       # Maps TCP port 5432 in the service container to a randomly chosen available port on the host.
-    #       - 5432
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports:
+          # Maps TCP port 5432 in the service container to a randomly chosen available port on the host.
+          - 5432
     steps:
       - name: Stepper ${{ matrix.WILLIAM }}
         id: stepper
@@ -357,19 +357,23 @@ jobs:
           echo "::group::ENV object"
           echo "${{ toJson(env) }}"
           echo "::endgroup::"
-
-
-      # - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
+        # shell:
+        timeout-minutes: 1
+        working-directory: .
+      - uses: postgres
+        continue-on-error: true
+      - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
+      - run: sleep 30
     strategy:
       fail-fast: false
       matrix:
+        WILLIAM: [ will, wills, william, will-i-am ]
         include:
           - WILLIAM: will
           - WILLIAM: wills
           - WILLIAM: william
-        #   - WILLIAM: will-i-am
-        # exclude:
-        #   - WILLIAM: will-i-am
+        exclude:
+          - WILLIAM: will-i-am
       max-parallel: 1
     timeout-minutes: 3
     
