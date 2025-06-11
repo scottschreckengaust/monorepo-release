@@ -1,0 +1,28 @@
+---
+name: Simpleton
+on:
+  workflow_dispatch:
+permissions:
+    actions: none
+    attestations: none
+    checks: none
+    contents: none
+    deployments: none
+    discussions: none
+    id-token: none
+    issues: none
+    models: none
+    packages: none
+    pages: none
+    pull-requests: none
+    repository-projects: none
+    security-events: none
+    statuses: none
+jobs:
+  simple:
+    name: Simple
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simpler
+        run: |
+          echo "simplest"
