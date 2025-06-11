@@ -1,16 +1,10 @@
 ---
-name: Gate
+name: Status
 run-name: ${{ github.workflow}} by @${{ github.triggering_actor }} for @${{ github.actor }}
 description: A build has all checks cleared
 
 on:
   status:
-  workflow_run:
-    branches: 
-      - 'main'
-    types: 
-      - completed
-    workflows: ['Gate']
 permissions:
   actions: none
   attestations: none
@@ -43,14 +37,3 @@ jobs:
           DESCRIPTION: ${{ github.event.description }}
         run: |
           echo The status is error or failed: $DESCRIPTION
-  workflow-run-completed-on-success:
-    if: >-
-      github.event_name == 'workflow_run' &&
-      github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
-    steps:
-      - run: | 
-          echo 'The triggering workflow passed'
-          echo "::group::EVENT object"
-          echo "${{ toJson(github.event) }}"
-          echo "::endgroup::"

@@ -1,0 +1,40 @@
+---
+name: Candidate
+run-name: ${{ github.workflow}} by @${{ github.triggering_actor }} for @${{ github.actor }}
+description: Prepare a release candidate
+on:
+  workflow_run:
+    branches: 
+      - 'main'
+    types: 
+      - completed
+    workflows: ['Status']
+permissions:
+  actions: none
+  attestations: none
+  checks: none
+  contents: none
+  deployments: none
+  discussions: none
+  id-token: none
+  issues: none
+  models: none
+  packages: none
+  pages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+jobs:
+  workflow-run-completed-on-success:
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - run: | 
+          echo 'The triggering workflow passed'
+          echo "::group::EVENT object"
+          echo "${{ toJson(github.event) }}"
+          echo "::endgroup::"
