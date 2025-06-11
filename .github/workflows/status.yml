@@ -24,6 +24,8 @@ permissions:
 
 jobs:
   debug:
+    permissions:
+      statuses: read
     runs-on: ubuntu-latest
     steps:
       - run: |
