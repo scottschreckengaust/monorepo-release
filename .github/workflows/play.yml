@@ -321,7 +321,9 @@ jobs:
         continue-on-error: true
         env:
           GRACE: "grace"
-        if: true || always() || cancelled() || failure() || success() || hashFiles('**/*') # github, inputs, vars, needs, strategy, matrix, steps, job, runner, env
+        # github, inputs, vars, needs, strategy, matrix, steps, job, runner, env
+        if: true || always() || cancelled() || failure() || success() || hashFiles('**/*')
+        
         run: |
           echo "${{ env.SCOTT }}, ${AMBER}, ${JOHN}, ${GRACE}, ${{ matrix.WILLIAM }}"
           echo "::group::GITHUB object"
