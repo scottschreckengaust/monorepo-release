@@ -1,0 +1,371 @@
+---
+name: PlayTime
+run-name: ${{ github.workflow}}-${{ github.workflow_sha }} by @${{ github.triggering_actor }} for @${{ github.actor }}
+description: This is a playful workflow for simple testing
+
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.event_name}}-${{ github.ref}}
+
+env:
+  SCOTT: "scott"
+
+on:
+  branch_protection_rule:
+    types:
+      - created
+      - deleted
+      - edited
+  check_run:
+    types:
+      - completed
+      - created
+      - requested_action
+      - rerequested
+  check_suite: 
+    types:
+      - completed
+  create:
+  delete: 
+  deployment:
+  deployment_status:
+  discussion:
+    types:
+      - answered
+      - category_changed
+      - created
+      - deleted
+      - edited
+      - labeled
+      - locked
+      - pinned
+      - transferred
+      - unanswered
+      - unlabeled
+      - unlocked
+      - unpinned
+  discussion_comment:
+    types:
+      - created
+      - deleted
+      - edited
+  fork:
+  gollum: 
+  issue_comment:
+    types: 
+      - created
+      - deleted
+      - edited
+  issues: 
+    types: 
+      - assigned
+      - closed
+      - deleted
+      - demilestoned
+      - edited
+      - labeled
+      - locked
+      - milestoned
+      - opened
+      - pinned
+      - reopened
+      - transferred
+      - unassigned
+      - unlabeled
+      - unlocked
+      - unpinned
+  label:
+    types: 
+      - created
+      - deleted
+      - edited
+  merge_group:
+    branches:
+      - '*'
+    types:
+      - checks_requested
+  milestone:
+    types: 
+      - closed
+      - created
+      - deleted
+      - edited
+      - opened
+  page_build:
+  project:
+    types: 
+      - closed
+      - created
+      - deleted
+      - edited
+      - reopened
+  project_card:
+    types: 
+      - converted
+      - created
+      - deleted
+      - edited
+      - moved
+  project_column:
+    types: 
+      - created
+      - deleted
+      - moved      
+      - updated
+  public:
+  push:
+    branches: 
+      - '*'
+    paths:
+      - '*'
+    tags: 
+      - '*'
+  pull_request:
+    branches: 
+      - '*'
+    paths:
+      - '*'
+    types:
+      - assigned
+      - auto_merge_disabled
+      - auto_merge_enabled
+      - closed
+      - converted_to_draft
+      - edited
+      - labeled
+      - locked
+      - opened
+      - ready_for_review
+      - reopened
+      - review_request_removed
+      - review_requested
+      - synchronize
+      - unassigned
+      - unlabeled
+      - unlocked
+  pull_request_comment: 
+    types: 
+      - created
+      - deleted
+      - edited
+    
+  pull_request_review: 
+    types: 
+      - dismissed
+      - edited
+      - submitted
+  pull_request_review_comment: 
+    types: 
+      - created
+      - deleted
+      - edited
+  pull_request_target:
+    branches: 
+      - '*'
+    paths: 
+      - '*'
+    types:
+      - assigned
+      - auto_merge_disabled
+      - auto_merge_enabled
+      - closed
+      - converted_to_draft
+      - edited
+      - labeled
+      - locked
+      - opened
+      - ready_for_review
+      - reopened
+      - review_request_removed
+      - review_requested
+      - synchronize
+      - unassigned
+      - unlabeled
+      - unlocked
+  registry_package: 
+    types: 
+      - published
+      - updated
+  release:
+    types: 
+      - created
+      - deleted
+      - edited
+      - prereleased
+      - published
+      - released
+      - unpublished
+  repository_dispatch: # This event will only trigger a workflow run if the workflow file exists on the default branch.
+    types:
+      - test_result
+  schedule:
+           # ┌───────────── minute (0 - 59)
+           # │ ┌───────────── hour (0 - 23)
+           # │ │ ┌───────────── day of the month (1 - 31)
+           # │ │ │ ┌───────────── month (1 - 12)
+           # │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+           # │ │ │ │ │
+           # * * * * *
+    - cron: '*/5 * * * *'
+  status:
+  watch:
+    types: 
+      - started
+  workflow_call:
+    inputs:
+      SCOTT:
+        default: ttocs
+        description: Backwards Scott
+        required: false
+        type: string
+    outputs:
+      AMBER:
+        description: Backwards Amber
+        value: rebma
+    secrets:
+      SAVANNAH:
+  workflow_dispatch:
+    inputs:
+      version_override:
+        description: 'Override version (optional, format: YYYY.M.YYYYMMDDHHII)'
+        required: false
+        type: string
+  workflow_run:
+    branches: 
+      - '*'
+    types: 
+      - completed
+      - in_progress
+      - requested
+    workflows: []
+
+permissions:
+    actions: none
+    attestations: none
+    checks: none
+    contents: none
+    deployments: none
+    discussions: none
+    id-token: none
+    issues: none
+    models: none
+    packages: none
+    pages: none
+    pull-requests: none
+    repository-projects: none
+    security-events: none
+    statuses: none
+
+jobs:
+  debug:
+    cancel-timeout-minutes: 1
+    concurrency:
+      cancel-in-progress: true
+      group: ${{ github.workflow}}-${{ github.event_name}}-${{ github.ref}}
+    # container:
+    #   # credentials:
+    #   #   password: 
+    #   #   username: 
+    #   env:
+    #     JOHN: "john"
+    #   image: 
+    #   options: 
+    #   ports:
+    #     - 8080
+    #   volumes:
+    #     - pwd
+    continue-on-error: true
+    # # defaults:
+    # #   run:
+    # #     shell: bash
+    # #     working-directory: .
+    env:
+      AMBER: "amber"
+    # # environment: 
+    if: true || always() || cancelled() || failure() || success() # github, inputs, vars, needs
+    name: Job Name
+    needs: []
+    outputs:
+      version: ${{ steps.stepper.outputs.version }}
+
+    permissions: 
+      actions: none
+      attestations: none
+      checks: none
+      contents: none
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: none
+      pages: none
+      pull-requests: none
+      repository-projects: none
+      security-events: none
+      statuses: none
+    runs-on: ubuntu-latest
+    # services:
+    #   postgres:
+    #     image: postgres
+    #     env:
+    #       POSTGRES_PASSWORD: postgres
+    #     options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    #     ports:
+    #       # Maps TCP port 5432 in the service container to a randomly chosen available port on the host.
+    #       - 5432
+    steps:
+      - name: Stepper ${{ matrix.WILLIAM }}
+        id: stepper
+        continue-on-error: true
+        env:
+          GRACE: "grace"
+        if: true || always() || cancelled() || failure() || success() || hashFiles('**/*') # github, inputs, vars, needs, strategy, matrix, steps, job, runner, env
+        run: |
+          echo ${SCOTT:-s}, ${AMBER:-a}, ${JOHN:-j}, ${GRACE:-g}, ${{ matrix.WILLIAM }}
+          echo "::group::GITHUB object"
+          echo ${{ fromJson(github) }}
+          echo "::endgroup::"
+          echo "::group::INPUTS object"
+          echo ${{ fromJson(inputs) }}
+          echo "::endgroup::"
+          echo "::group::VARS object"
+          echo ${{ fromJson(vars) }}
+          echo "::endgroup::"
+          echo "::group::NEEDS object"
+          echo ${{ fromJson(needs) }}
+          echo "::endgroup::"
+          echo "::group::STRATEGY object"
+          echo ${{ fromJson(strategy) }}
+          echo "::endgroup::"
+          echo "::group::MATRIX object"
+          echo ${{ fromJson(matrix) }}
+          echo "::endgroup::"
+          echo "::group::STEPS object"
+          echo ${{ fromJson(steps) }}
+          echo "::endgroup::"
+          echo "::group::JOB object"
+          echo ${{ fromJson(job) }}
+          echo "::endgroup::"
+          echo "::group::RUNNER object"
+          echo ${{ fromJson(runner) }}
+          echo "::endgroup::"
+          echo "::group::ENV object"
+          echo ${{ fromJson(env) }}
+          echo "::endgroup::"
+          strategy, matrix, steps, job, runner, env
+          echo version="${SCOTT:-x}" >> "$GITHUB_OUTPUT"
+      # - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - WILLIAM: will
+          - WILLIAM: wills
+          - WILLIAM: william
+          - WILLIAM: will-i-am
+        exclude:
+          - WILLIAM: will-i-am
+      max-parallel: 1
+    timeout-minutes: 3
+    

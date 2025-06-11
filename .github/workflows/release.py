@@ -170,16 +170,7 @@ class PyPiPackage:
         with open(self.path / 'pyproject.toml', 'w', encoding='utf-8') as toml_file_handle:
             toml_file_handle.write(tomlkit.dumps(data))
 
-        with open(self.path / 'awslabs' / '__init__.py', 'r+', encoding='utf-8') as version_file_handle:
-            content = version_file_handle.read()
-            content = re.sub(
-                r'__version__ = \'.*\'',
-                f'__version__ = \'{version}\'',
-                content,
-            )
-            version_file_handle.seek(0)
-            version_file_handle.write(content)
-            version_file_handle.truncate()
+        # sync_init_versions()
         return version
 
 
@@ -220,7 +211,7 @@ def has_changes(path: Path, git_hash: GitHash) -> bool:
             logging.debug('Changed files: %s', changed_files)
 
             relevant_files = [
-                f for f in changed_files if f.suffix in ['.py', '.ts', '.toml', '.lock', '.json']
+                f for f in changed_files # ALL FILE COUNT...if f.suffix in ['.py', '.ts', '.toml', '.lock', '.json', '.sh'] or f.name in ['Dockerfile']
             ]
             logging.debug('Relevant files: %s', relevant_files)
 
