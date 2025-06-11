@@ -1,49 +1,14 @@
----
-name: Status
-
 on:
   status:
   check_run:
      types:
        - completed
 permissions: write-all
-  # actions: none
-  # attestations: none
-  # checks: none
-  # contents: none
-  # deployments: none
-  # discussions: none
-  # id-token: none
-  # issues: none
-  # models: none
-  # packages: none
-  # pages: none
-  # pull-requests: none
-  # repository-projects: none
-  # security-events: none
-  # statuses: read
-
 jobs:
-  debug:
-    # permissions:
-    #   statuses: read
+  hereiam:
     runs-on: ubuntu-latest
     steps:
       - run: |
           echo "::group::GITHUB object"
           echo "${{ toJson(github) }}"
           echo "::endgroup::"    
-  # commit-status-success:
-  #   concurrency:
-  #     cancel-in-progress: true
-  #     group: ${{ github.event_name}}-${{ github.ref}}
-  #   if: >-
-  #     github.event_name == 'status' &&
-  #     github.event.state == 'success'
-  #   runs-on: ubuntu-latest
-  #   # error, failure, pending, or success
-  #   steps:
-  #     - env:
-  #         DESCRIPTION: ${{ github.event.description }}
-  #       run: |
-  #         echo The status is error or failed: $DESCRIPTION
