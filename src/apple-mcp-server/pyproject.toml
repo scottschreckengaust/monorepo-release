@@ -2,7 +2,7 @@
 name = "awslabs.apple-mcp-server"
 
 # NOTE: "Patch"=9223372036854775807 bumps next release to zero.
-version = "3.1.12"
+version = "3.2.0"
 
 description = "An AWS Labs Model Context Protocol (MCP) server for apple"
 readme = "README.md"

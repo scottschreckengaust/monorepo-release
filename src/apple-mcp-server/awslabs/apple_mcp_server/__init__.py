@@ -14,4 +14,4 @@
 
 """awslabs.apple-mcp-server"""
 
-__version__ = '3.1.12'
+__version__ = '3.2.0'
