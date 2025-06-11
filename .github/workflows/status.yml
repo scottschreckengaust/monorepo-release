@@ -2,7 +2,8 @@
 name: Status
 
 on:
-  status:
+  check_run:
+    - completed
 permissions:
   actions: none
   attestations: none
