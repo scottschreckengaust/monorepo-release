@@ -326,6 +326,8 @@ jobs:
         if: ${{ ( true || always() || cancelled() || failure() || success() || hashFiles('**/*') ) }}
         run: |
           echo version="BLAST" >> "$GITHUB_OUTPUT"
+          echo "${{ env.SCOTT }}, ${{ env.AMBER }}, ${JOHN}, ${{ env.GRACE }}, ${{ matrix.WILLIAM }}"
+ 
       # - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
     strategy:
       fail-fast: false
