@@ -364,9 +364,9 @@ jobs:
           - WILLIAM: will
           - WILLIAM: wills
           - WILLIAM: william
-          - WILLIAM: will-i-am
-        exclude:
-          - WILLIAM: will-i-am
+        #   - WILLIAM: will-i-am
+        # exclude:
+        #   - WILLIAM: will-i-am
       max-parallel: 1
     timeout-minutes: 3
     
