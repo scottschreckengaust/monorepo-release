@@ -360,7 +360,7 @@ jobs:
         # shell:
         timeout-minutes: 1
         working-directory: .
-      - uses: postgres
+      - uses: docker://library/postgres@sha256:6cf6142afacfa89fb28b894d6391c7dcbf6523c33178bdc33e782b3b533a9342
         continue-on-error: true
       - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
       - run: sleep 30
