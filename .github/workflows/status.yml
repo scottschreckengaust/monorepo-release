@@ -1,7 +1,5 @@
 ---
 name: Status
-run-name: ${{ github.workflow}} by @${{ github.triggering_actor }} for @${{ github.actor }}
-description: A build has all checks cleared
 
 on:
   status:
@@ -20,7 +18,7 @@ permissions:
   pull-requests: none
   repository-projects: none
   security-events: none
-  statuses: none
+  statuses: read
 
 jobs:
   debug:
@@ -32,17 +30,17 @@ jobs:
           echo "::group::GITHUB object"
           echo "${{ toJson(github) }}"
           echo "::endgroup::"    
-  commit-status-success:
-    concurrency:
-      cancel-in-progress: true
-      group: ${{ github.event_name}}-${{ github.ref}}
-    if: >-
-      github.event_name == 'status' &&
-      github.event.state == 'success'
-    runs-on: ubuntu-latest
-    # error, failure, pending, or success
-    steps:
-      - env:
-          DESCRIPTION: ${{ github.event.description }}
-        run: |
-          echo The status is error or failed: $DESCRIPTION
+  # commit-status-success:
+  #   concurrency:
+  #     cancel-in-progress: true
+  #     group: ${{ github.event_name}}-${{ github.ref}}
+  #   if: >-
+  #     github.event_name == 'status' &&
+  #     github.event.state == 'success'
+  #   runs-on: ubuntu-latest
+  #   # error, failure, pending, or success
+  #   steps:
+  #     - env:
+  #         DESCRIPTION: ${{ github.event.description }}
+  #       run: |
+  #         echo The status is error or failed: $DESCRIPTION
