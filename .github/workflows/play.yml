@@ -322,42 +322,10 @@ jobs:
         env:
           GRACE: "grace"
         # github, inputs, vars, needs, strategy, matrix, steps, job, runner, env
-        # || hashFiles('**/*') ) }}
-        if: ${{ ( true || always() || cancelled() || failure() || success() ) }}
+        # 
+        if: ${{ ( true || always() || cancelled() || failure() || success() || hashFiles('**/*') ) }}
         run: |
           echo version="BLAST" >> "$GITHUB_OUTPUT"
-          # echo "${{ env.SCOTT }}, ${{ env.AMBER }}, ${JOHN}, ${{ env.GRACE }}, ${{ matrix.WILLIAM }}"
-          # echo "::group::GITHUB object"
-          # echo ${{ fromJson(github) }}
-          # echo "::endgroup::"
-          # echo "::group::INPUTS object"
-          # echo ${{ fromJson(inputs) }}
-          # echo "::endgroup::"
-          # echo "::group::VARS object"
-          # echo ${{ fromJson(vars) }}
-          # echo "::endgroup::"
-          # echo "::group::NEEDS object"
-          # echo ${{ fromJson(needs) }}
-          # echo "::endgroup::"
-          # echo "::group::STRATEGY object"
-          # echo ${{ fromJson(strategy) }}
-          # echo "::endgroup::"
-          # echo "::group::MATRIX object"
-          # echo ${{ fromJson(matrix) }}
-          # echo "::endgroup::"
-          # echo "::group::STEPS object"
-          # echo ${{ fromJson(steps) }}
-          # echo "::endgroup::"
-          # echo "::group::JOB object"
-          # echo ${{ fromJson(job) }}
-          # echo "::endgroup::"
-          # echo "::group::RUNNER object"
-          # echo ${{ fromJson(runner) }}
-          # echo "::endgroup::"
-          # echo "::group::ENV object"
-          # echo ${{ fromJson(env) }}
-          # echo "::endgroup::"
-          
       # - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
     strategy:
       fail-fast: false
