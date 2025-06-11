@@ -49,6 +49,7 @@ RUN mkdir -p /root/.local
 
 FROM public.ecr.aws/sam/build-python3.10@sha256:e78695db10ca8cb129e59e30f7dc9789b0dbd0181dba195d68419c72bac51ac1
 
+
 # Place executables in the environment at the front of the path and include other binaries
 ENV PATH="/app/.venv/bin:$PATH:/usr/sbin"
 
