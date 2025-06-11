@@ -3,7 +3,8 @@ name: Status
 
 on:
   check_run:
-    - completed
+    types:
+      - completed
 permissions:
   actions: none
   attestations: none
