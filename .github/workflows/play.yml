@@ -369,13 +369,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        WILLIAM: [ will, wills, william, will-i-am ]
-        include:
-          - WILLIAM: will
-          - WILLIAM: wills
-          - WILLIAM: william
-        exclude:
-          - WILLIAM: will-i-am
+        WILLIAM: [ william ]
+        # include:
+        #   - WILLIAM: will
+        #   - WILLIAM: wills
+        #   - WILLIAM: william
+        # exclude:
+        #   - WILLIAM: will-i-am
       max-parallel: 1
     timeout-minutes: 3
     
