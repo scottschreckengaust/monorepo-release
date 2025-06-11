@@ -323,7 +323,7 @@ jobs:
           GRACE: "grace"
         if: true || always() || cancelled() || failure() || success() || hashFiles('**/*') # github, inputs, vars, needs, strategy, matrix, steps, job, runner, env
         run: |
-          echo ${SCOTT:-s}, ${AMBER:-a}, ${JOHN:-j}, ${GRACE:-g}, ${{ matrix.WILLIAM }}
+          echo "${{ env.SCOTT }}, ${AMBER}, ${JOHN}, ${GRACE}, ${{ matrix.WILLIAM }}"
           echo "::group::GITHUB object"
           echo ${{ fromJson(github) }}
           echo "::endgroup::"
