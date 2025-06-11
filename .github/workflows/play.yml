@@ -322,7 +322,8 @@ jobs:
         env:
           GRACE: "grace"
         # github, inputs, vars, needs, strategy, matrix, steps, job, runner, env
-        if: ${{ ( true || always() || cancelled() || failure() || success() || hashFiles('**/*') ) }}
+        # || hashFiles('**/*') ) }}
+        if: ${{ ( true || always() || cancelled() || failure() || success() ) }}
         run: |
           echo version="BLAST" >> "$GITHUB_OUTPUT"
           # echo "${{ env.SCOTT }}, ${{ env.AMBER }}, ${JOHN}, ${{ env.GRACE }}, ${{ matrix.WILLIAM }}"
