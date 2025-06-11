@@ -306,15 +306,15 @@ jobs:
       security-events: none
       statuses: none
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-        ports:
-          # Maps TCP port 5432 in the service container to a randomly chosen available port on the host.
-          - 5432
+    # services:
+    #   postgres:
+    #     image: postgres
+    #     env:
+    #       POSTGRES_PASSWORD: postgres
+    #     options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    #     ports:
+    #       # Maps TCP port 5432 in the service container to a randomly chosen available port on the host.
+    #       - 5432
     steps:
       - name: Stepper ${{ matrix.WILLIAM }}
         id: stepper
@@ -360,12 +360,12 @@ jobs:
         # shell:
         timeout-minutes: 1
         working-directory: .
-      - uses: docker://library/postgres@sha256:6cf6142afacfa89fb28b894d6391c7dcbf6523c33178bdc33e782b3b533a9342
-        env:
-          POSTGRES_PASSWORD: postgres
-        continue-on-error: true
-      - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
-      - run: sleep 30
+      # - uses: docker://library/postgres@sha256:6cf6142afacfa89fb28b894d6391c7dcbf6523c33178bdc33e782b3b533a9342
+      #   env:
+      #     POSTGRES_PASSWORD: postgres
+      #   continue-on-error: true
+      # - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
+      # - run: sleep 30
     strategy:
       fail-fast: false
       matrix:
