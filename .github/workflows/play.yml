@@ -231,14 +231,14 @@ on:
         description: 'Override version (optional, format: YYYY.M.YYYYMMDDHHII)'
         required: false
         type: string
-  workflow_run:
-    branches: 
-      - '*'
-    types: 
-      - completed
-      - in_progress
-      - requested
-    workflows: []
+  # workflow_run:
+  #   branches: 
+  #     - '*'
+  #   types: 
+  #     - completed
+  #     - in_progress
+  #     - requested
+  #   workflows: []
 
 permissions:
     actions: none
