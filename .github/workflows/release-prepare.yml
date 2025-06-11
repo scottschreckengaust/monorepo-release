@@ -1,0 +1,189 @@
+name: Release Preparation
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_override:
+        description: 'Override version (optional, format: YYYY.M.YYYYMMDDHHII)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+
+    - name: Get last release tag
+      id: last_tag
+      run: |
+        # Get the most recent tag that looks like a release version
+        LAST_TAG=$(git tag --list --sort=-version:refname | grep -E '^[0-9]{4}\.[0-9]+\.[0-9]+$' | head -1)
+        if [ -z "$LAST_TAG" ]; then
+          # If no release tags exist, use initial commit
+          LAST_TAG=$(git rev-list --max-parents=0 HEAD)
+          echo "No release tags found, using initial commit: $LAST_TAG"
+        else
+          echo "Last release tag: $LAST_TAG"
+        fi
+        echo "last_tag=$LAST_TAG" >> $GITHUB_OUTPUT
+
+    - name: Generate version
+      id: version
+      run: |
+        if [ -n "${{ github.event.inputs.version_override }}" ]; then
+          VERSION="${{ github.event.inputs.version_override }}"
+          echo "Using override version: $VERSION"
+        else
+          VERSION=$(uv run scripts/release.py generate-version)
+          echo "Generated version: $VERSION"
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "branch_name=release/$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Check for changes
+      id: changes
+      run: |
+        echo "Checking for changes since ${{ steps.last_tag.outputs.last_tag }}"
+        CHANGED_PACKAGES=$(uv run scripts/release.py generate-matrix --directory ./src --pypi ${{ steps.last_tag.outputs.last_tag }})
+        echo "Changed packages: $CHANGED_PACKAGES"
+        
+        if [ "$CHANGED_PACKAGES" = "[]" ]; then
+          echo "No packages have changes since last release"
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "Found changes in packages"
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+          echo "changed_packages=$CHANGED_PACKAGES" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Exit if no changes
+      if: steps.changes.outputs.has_changes == 'false'
+      run: |
+        echo "::notice::No packages have changes since the last release. Skipping release preparation."
+        exit 0
+
+    - name: Create release branch
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        BRANCH_NAME="${{ steps.version.outputs.branch_name }}"
+        echo "Creating branch: $BRANCH_NAME"
+        
+        git checkout -b "$BRANCH_NAME"
+
+    - name: Update package versions
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        echo "Updating package versions since ${{ steps.last_tag.outputs.last_tag }}"
+        UPDATED_PACKAGES=$(uv run scripts/release.py update-packages --directory ./src ${{ steps.last_tag.outputs.last_tag }})
+        echo "Updated packages:"
+        echo "$UPDATED_PACKAGES"
+        echo "updated_packages<<EOF" >> $GITHUB_ENV
+        echo "$UPDATED_PACKAGES" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    - name: Update __init__.py versions
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        echo "Syncing __init__.py versions with pyproject.toml"
+        uv run scripts/release.py sync-init-versions --directory ./src
+
+    - name: Commit changes
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        git add .
+        git commit -m "Release ${{ steps.version.outputs.version }}: Update package versions
+
+        Updated packages:
+        ${{ env.updated_packages }}
+        
+        This release includes changes since ${{ steps.last_tag.outputs.last_tag }}"
+
+    - name: Push release branch
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        git push origin ${{ steps.version.outputs.branch_name }}
+
+    - name: Generate release notes preview
+      if: steps.changes.outputs.has_changes == 'true'
+      id: release_notes
+      run: |
+        NOTES=$(uv run scripts/release.py generate-notes --directory ./src ${{ steps.last_tag.outputs.last_tag }})
+        echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+        echo "$NOTES" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Create Pull Request
+      if: steps.changes.outputs.has_changes == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: pullRequest } = await github.rest.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `Release ${{ steps.version.outputs.version }}`,
+            head: '${{ steps.version.outputs.branch_name }}',
+            base: 'main',
+            body: `# Release ${{ steps.version.outputs.version }}
+
+          This PR contains version updates for packages that have changed since the last release (${{ steps.last_tag.outputs.last_tag }}).
+
+          ## Updated Packages
+          \`\`\`
+          ${{ env.updated_packages }}
+          \`\`\`
+
+          ## Release Notes Preview
+          ${{ steps.release_notes.outputs.release_notes }}
+
+          ## Review Checklist
+          - [ ] Version numbers are correct
+          - [ ] All changed packages are included
+          - [ ] No unintended changes are present
+          - [ ] Release notes look accurate
+
+          **⚠️ This PR requires 2 approvals before merging.**
+
+          After merge, the build will run and if successful, a git tag will be created automatically.`,
+            draft: false
+          });
+
+          // Request reviews from CODEOWNERS or default reviewers
+          // Note: This would need to be configured based on your team structure
+          console.log(`Created PR #${pullRequest.number}: ${pullRequest.html_url}`);
+
+    - name: Summary
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        echo "## Release Preparation Complete! 🚀" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch:** ${{ steps.version.outputs.branch_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Updated Packages:**" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "${{ env.updated_packages }}" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "A pull request has been created and is ready for review." >> $GITHUB_STEP_SUMMARY
+        echo "**Next steps:** Get 2 approvals and merge the PR to trigger tagging." >> $GITHUB_STEP_SUMMARY
