@@ -1,5 +1,5 @@
 ---
-name: Release Candidate
+name: Gate
 run-name: ${{ github.workflow}} by @${{ github.triggering_actor }} for @${{ github.actor }}
 description: A build has all checks cleared
 
@@ -10,7 +10,7 @@ on:
       - 'main'
     types: 
       - completed
-    workflows: ['Release Candidate']
+    workflows: ['Gate']
 permissions:
   actions: none
   attestations: none
