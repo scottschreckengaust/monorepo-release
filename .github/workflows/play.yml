@@ -143,11 +143,12 @@ on:
       - unassigned
       - unlabeled
       - unlocked
-  pull_request_comment: 
-    types: 
-      - created
-      - deleted
-      - edited
+  
+  # pull_request_comment: 
+  #   types: 
+  #     - created
+  #     - deleted
+  #     - edited
     
   pull_request_review: 
     types: 
