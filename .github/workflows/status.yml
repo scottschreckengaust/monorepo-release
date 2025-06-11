@@ -23,6 +23,13 @@ permissions:
   statuses: none
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::group::GITHUB object"
+          echo "${{ toJson(github) }}"
+          echo "::endgroup::"    
   commit-status-success:
     concurrency:
       cancel-in-progress: true

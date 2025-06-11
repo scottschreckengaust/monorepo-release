@@ -19,6 +19,13 @@ permissions:
     security-events: none
     statuses: none
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::group::GITHUB object"
+          echo "${{ toJson(github) }}"
+          echo "::endgroup::"   
   simple:
     name: Simple
     runs-on: ubuntu-latest

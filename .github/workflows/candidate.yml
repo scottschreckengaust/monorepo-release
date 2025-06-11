@@ -27,6 +27,13 @@ permissions:
   statuses: none
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::group::GITHUB object"
+          echo "${{ toJson(github) }}"
+          echo "::endgroup::"          
   workflow-run-completed-on-success:
     if: >-
       github.event_name == 'workflow_run' &&
