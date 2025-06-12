@@ -20,6 +20,8 @@ permissions:
     statuses: none
 jobs:
   debug:
+    env:
+      GH_TOKEN: ${{ github.token }}
     permissions:
       checks: read
       statuses: read
