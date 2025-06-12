@@ -9,9 +9,7 @@ on:
   check_suite: 
     types:
       - completed
-permissions:
-  statuses: write
-  checks: write
+permissions: write-all
 jobs:
   hereiam:
     runs-on: ubuntu-latest
@@ -20,4 +18,7 @@ jobs:
           echo "::group::GITHUB object"
           echo "${{ toJson(github) }}"
           echo "::endgroup::"
-          
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/scottschreckengaust/monorepo-release/commits/${{ github.ref }}/check-runs | jq
