@@ -5,7 +5,7 @@ on:
 permissions:
     actions: none
     attestations: none
-    checks: none
+    checks: read
     contents: none
     deployments: none
     discussions: none
@@ -17,7 +17,7 @@ permissions:
     pull-requests: none
     repository-projects: none
     security-events: none
-    statuses: none
+    statuses: read
 jobs:
   debug:
     runs-on: ubuntu-latest
