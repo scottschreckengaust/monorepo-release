@@ -1,17 +1,23 @@
 on:
   status:
-  check_run:
-     types:
-       - created
-       - rerequested
-       - completed
-       - requested_action
-  check_suite: 
-    types:
-      - completed
-permissions: write-all
+permissions:
+  actions: none
+  attestations: none
+  checks: none
+  contents: none
+  deployments: none
+  discussions: none
+  id-token: none
+  issues: none
+  models: none
+  packages: none
+  pages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
 jobs:
-  hereiam:
+  gamma:
     runs-on: ubuntu-latest
     steps:
       - run: |
