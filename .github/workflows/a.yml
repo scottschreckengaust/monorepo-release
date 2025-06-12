@@ -20,9 +20,16 @@ permissions:
     statuses: none
 jobs:
   debug:
+    permissions:
+      checks: read
+      statuses: read
     runs-on: ubuntu-latest
     steps:
       - run: |
           echo "::group::GITHUB object"
           echo "${{ toJson(github) }}"
           echo "::endgroup::"
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/scottschreckengaust/monorepo-release/commits/main/status | jq
