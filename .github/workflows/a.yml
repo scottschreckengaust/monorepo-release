@@ -2,29 +2,29 @@ on:
   push:
     branches: 
       - 'main'
-permissions:
-    actions: none
-    attestations: none
-    checks: none
-    contents: none
-    deployments: none
-    discussions: none
-    id-token: none
-    issues: none
-    models: none
-    packages: none
-    pages: none
-    pull-requests: none
-    repository-projects: none
-    security-events: none
-    statuses: none
+permissions: write-all
+    # actions: none
+    # attestations: none
+    # checks: none
+    # contents: none
+    # deployments: none
+    # discussions: none
+    # id-token: none
+    # issues: none
+    # models: none
+    # packages: none
+    # pages: none
+    # pull-requests: none
+    # repository-projects: none
+    # security-events: none
+    # statuses: none
 jobs:
   debug:
     env:
       GH_TOKEN: ${{ github.token }}
-    permissions:
-      checks: read
-      statuses: read
+    # permissions:
+    #   checks: read
+    #   statuses: read
     runs-on: ubuntu-latest
     steps:
       - run: |
