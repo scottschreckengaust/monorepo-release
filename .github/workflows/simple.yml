@@ -25,11 +25,21 @@ jobs:
       - run: |
           echo "::group::GITHUB object"
           echo "${{ toJson(github) }}"
-          echo "::endgroup::"   
+          echo "::endgroup::"
+
   simple:
+    env:
+      GH_TOKEN: ${{ github.token }}
+    permissions:
+      checks: read
+      statuses: read
     name: Simple
     runs-on: ubuntu-latest
     steps:
       - name: Simpler
         run: |
           echo "simplest"
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/scottschreckengaust/monorepo-release/commits/main/status | jq
