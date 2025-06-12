@@ -2,7 +2,10 @@ on:
   status:
   check_run:
      types:
+       - created
+       - rerequested
        - completed
+       - requested_action
   check_suite: 
     types:
       - completed
@@ -16,4 +19,5 @@ jobs:
       - run: |
           echo "::group::GITHUB object"
           echo "${{ toJson(github) }}"
-          echo "::endgroup::"    
+          echo "::endgroup::"
+          
