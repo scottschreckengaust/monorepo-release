@@ -47,6 +47,10 @@ jobs:
           echo "::endgroup::" 
 
           ## set a statuses state if "success" and exit failure otherwise
+
+          echo 'gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -f "state=success" -f "context=${{ github.workflow }}" -f "description=success" \'
+          echo ' /repos/${{ github.repository }}/statuses/${{ github.sha }}'
+
           echo "::group::statuses object"
           gh api \
            --method POST \
@@ -57,4 +61,6 @@ jobs:
            -f "context=${{ github.workflow }}" \
            -f "description=success"
           echo "::endgroup::"
+
+
 
