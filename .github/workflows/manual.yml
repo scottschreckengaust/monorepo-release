@@ -47,15 +47,14 @@ jobs:
           echo "::endgroup::" 
 
           ## set a statuses state if "success" and exit failure otherwise
-          #echo "::group::statuses object"
-          #gh api \
-          #  --method POST \
-          #  -H "Accept: application/vnd.github+json" \
-          #  -H "X-GitHub-Api-Version: 2022-11-28" \
-          #  /repos/${{ github.repository }}/statuses/${{ github.sha }} \
-          #  -f "state=success" \
-          #  -f "context=${{ github.workflow }}"
-          #  -f "target_url=https://example.com/build/status" \
-          #  -f "description=forced success" \
-          #echo "::endgroup::" 
+          echo "::group::statuses object"
+          gh api \
+           --method POST \
+           -H "Accept: application/vnd.github+json" \
+           -H "X-GitHub-Api-Version: 2022-11-28" \
+           /repos/${{ github.repository }}/statuses/${{ github.sha }} \
+           -f "state=success" \
+           -f "context=${{ github.workflow }}"
+           -f "description=success" \
+          echo "::endgroup::"
 
