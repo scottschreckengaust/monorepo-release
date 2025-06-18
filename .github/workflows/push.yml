@@ -26,3 +26,4 @@ jobs:
           echo "::group::GITHUB object"
           echo "${{ toJson(github) }}"
           echo "::endgroup::"
+          exit 1
