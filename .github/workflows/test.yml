@@ -18,16 +18,19 @@ permissions:
     security-events: none
     statuses: none
 
+env:
+    SRC_DIR: ./src
+    
 jobs:
   penultimate:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     outputs:
-      python-packages: ${{ steps.find-python-packages.outputs.packages}}
-      node-packages: ${{ steps.find-node-packages.outputs.packages }}
-      container-projects: ${{ steps.find-container-projects.outputs.images }}
-      all-modified-directories: ${{ steps.modified-directories.outputs.all_modified_files }}
+      python-packages: ${{ steps.find-python-packages.outputs.packages || '[]'}}
+      node-packages: ${{ steps.find-node-packages.outputs.packages || '[]' }}
+      container-projects: ${{ steps.find-container-projects.outputs.images || '[]' }}
+      all-modified-directories: ${{ steps.modified-directories.outputs.all_modified_files || '[]' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -43,36 +46,36 @@ jobs:
           echo "::endgroup::"
       - name: Find Python packages
         id: find-python-packages
-        if: hashFiles('./src/**/pyproject.toml')
-        working-directory: ./src
+        if: hashFiles(format('{0}/**/pyproject.toml', env.SRC_DIR))
+        working-directory: ${{ env.SRC_DIR }}
         run: |
           PACKAGES=$(find . -name pyproject.toml -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
       - name: Find Node packages
         id: find-node-packages
-        if: hashFiles('./src/**/package.json')
-        working-directory: ./src
+        if: hashFiles(format('{0}/**/package.json', env.SRC_DIR))
+        working-directory: ${{ env.SRC_DIR }}
         run: |
           PACKAGES=$(find . -name package.json -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT      
       
       - name: Find Container Projects
         id: find-container-projects
-        if: hashFiles('./src/**/Dockerfile')
-        working-directory: ./src
+        if: hashFiles(format('{0}/**/Dockerfile', env.SRC_DIR))
+        working-directory: ${{ env.SRC_DIR }}
         run: |
           IMAGES=$(find . -name Dockerfile -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "images=$IMAGES" >> $GITHUB_OUTPUT      
       
       - name: Find Modified Directories
         id: modified-directories
-        if: hashFiles('./src')
+        if: hashFiles(format('{0}', env.SRC_DIR))
         uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
         with:
-          path: ./src
+          path: ${{ env.SRC_DIR }}
           dir_names: true
-          dir_names_max_depth: 2
+          dir_names_max_depth: 1
           json: true
           escape_json: true
           matrix: true
@@ -111,24 +114,24 @@ jobs:
 #           persist-credentials: false
 #       - name: Docker
 #         id: exists-dockerfile
-#         if: hashFiles(format('src/{0}/Dockerfile', matrix.all-modified-directories))
+#         if: hashFiles(format('{0}/{1}/Dockerfile', env.SRC_DIR, matrix.all-modified-directories))
 #         run: |
 #           echo "::group::Dockerfile"
-#           cat "${{ format('src/{0}/Dockerfile', matrix.all-modified-directories) }}"
+#           cat "${{ format('{0}/{1}/Dockerfile', env.SRC_DIR, matrix.all-modified-directories) }}"
 #           echo "::endgroup::"
 #       - name: Python
 #         id: exists-python
-#         if: hashFiles(format('src/{0}/pyproject.toml', matrix.all-modified-directories))
+#         if: hashFiles(format('{0}/{1}/pyproject.toml', env.SRC_DIR, matrix.all-modified-directories))
 #         run: |
 #           echo "::group::pyproject.toml"
-#           cat "${{ format('src/{0}/pyproject.toml', matrix.all-modified-directories) }}"
+#           cat "${{ format('{0}/{1}/pyproject.toml', env.SRC_DIR, matrix.all-modified-directories) }}"
 #           echo "::endgroup::"
 #       - name: Node
 #         id: exists-node
-#         if: hashFiles(format('src/{0}/package.json', matrix.all-modified-directories))
+#         if: hashFiles(format('{0}/{1}/package.json', env.SRC_DIR, matrix.all-modified-directories))
 #         run: |
 #           echo "::group::package.json"
-#           cat "${{ format('src/{0}/package.json', matrix.all-modified-directories) }}"
+#           cat "${{ format('{0}/{1}/package.json', env.SRC_DIR, matrix.all-modified-directories) }}"
 #           echo "::endgroup::"
 #     strategy:
 #       fail-fast: false
