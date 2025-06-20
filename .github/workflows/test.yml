@@ -43,34 +43,34 @@ jobs:
           echo "::endgroup::"
       - name: Find Python packages
         id: find-python-packages
-        if: hashFiles('/src/**/pyproject.toml')
-        working-directory: src
+        if: hashFiles('./src/**/pyproject.toml')
+        working-directory: ./src
         run: |
           PACKAGES=$(find . -name pyproject.toml -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
       - name: Find Node packages
         id: find-node-packages
-        if: hashFiles('/src/**/package.json')
-        working-directory: src
+        if: hashFiles('./src/**/package.json')
+        working-directory: ./src
         run: |
           PACKAGES=$(find . -name package.json -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT      
       
       - name: Find Container Projects
         id: find-container-projects
-        if: hashFiles('/src/**/Dockerfile')
-        working-directory: src
+        if: hashFiles('./src/**/Dockerfile')
+        working-directory: ./src
         run: |
           IMAGES=$(find . -name Dockerfile -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "images=$IMAGES" >> $GITHUB_OUTPUT      
       
       - name: Find Modified Directories
         id: modified-directories
-        if: hashFiles('/src')
+        if: hashFiles('./src')
         uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
         with:
-          path: src
+          path: ./src
           dir_names: true
           dir_names_max_depth: 2
           json: true
