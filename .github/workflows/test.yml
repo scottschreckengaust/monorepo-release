@@ -1,0 +1,125 @@
+on:
+  push:
+
+permissions:
+    actions: none
+    attestations: none
+    checks: none
+    contents: none
+    deployments: none
+    discussions: none
+    id-token: none
+    issues: none
+    models: none
+    packages: none
+    pages: none
+    pull-requests: none
+    repository-projects: none
+    security-events: none
+    statuses: none
+
+jobs:
+  penultimate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      python-packages: ${{ steps.find-python-packages.outputs.packages }}
+      node-packages: ${{ steps.find-node-packages.outputs.packages }}
+      container-projects: ${{ steps.find-container-projects.outputs.images }}
+      all-modified-directories: ${{ steps.modified-directories.outputs.all_modified_files }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          lfs: true
+          fetch-depth: 2
+          submodules: true
+          persist-credentials: false
+
+      - name: Find Python packages
+        id: find-python-packages
+        working-directory: src
+        run: |
+          PACKAGES=$(find . -name pyproject.toml -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
+          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
+
+      - name: Find Node packages
+        id: find-node-packages
+        working-directory: src
+        run: |
+          PACKAGES=$(find . -name package.json -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
+          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT      
+      
+      - name: Find Container Projects
+        id: find-container-projects
+        working-directory: src
+        run: |
+          IMAGES=$(find . -name Dockerfile -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
+          echo "images=$IMAGES" >> $GITHUB_OUTPUT      
+      
+      - name: Find Modified Directories
+        id: modified-directories
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
+        with:
+          path: src
+          dir_names: true
+          dir_names_max_depth: 2
+          json: true
+          escape_json: true
+          matrix: true
+
+      - name: Debug
+        id: debug
+        run: |
+          echo "Debugging Outputs"
+
+          echo "::group::Python Packages"
+          echo "${{ steps.find-python-packages.outputs.packages }}"
+          echo "::endgroup::"
+          echo "::group::Node Packages"
+          echo "${{ steps.find-node-packages.outputs.packages }}"
+          echo "::endgroup::"
+          echo "::group::Container Projects"
+          echo "${{ steps.find-container-projects.outputs.images }}"
+          echo "::endgroup::"
+          echo "::group::Modified Directories"
+          echo "${{ steps.modified-directories.outputs.all_modified_files }}"
+          echo "::endgroup::"
+
+#   omega:
+#     needs: [penultimate]
+#     if: ${{ needs.penultimate.outputs.all-modified-directories != '[]' && needs.penultimate.outputs.all-modified-directories != '' }}
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#     steps:
+#       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+#         with:
+#           lfs: true
+#           submodules: true
+#           persist-credentials: false
+#       - name: Docker
+#         id: exists-dockerfile
+#         if: hashFiles(format('src/{0}/Dockerfile', matrix.all-modified-directories))
+#         run: |
+#           echo "::group::Dockerfile"
+#           cat "${{ format('src/{0}/Dockerfile', matrix.all-modified-directories) }}"
+#           echo "::endgroup::"
+#       - name: Python
+#         id: exists-python
+#         if: hashFiles(format('src/{0}/pyproject.toml', matrix.all-modified-directories))
+#         run: |
+#           echo "::group::pyproject.toml"
+#           cat "${{ format('src/{0}/pyproject.toml', matrix.all-modified-directories) }}"
+#           echo "::endgroup::"
+#       - name: Node
+#         id: exists-node
+#         if: hashFiles(format('src/{0}/package.json', matrix.all-modified-directories))
+#         run: |
+#           echo "::group::package.json"
+#           cat "${{ format('src/{0}/package.json', matrix.all-modified-directories) }}"
+#           echo "::endgroup::"
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         all-modified-directories: ${{ fromJson(needs.penultimate.outputs.all-modified-directories) }}
