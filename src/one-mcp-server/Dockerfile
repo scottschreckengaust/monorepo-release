@@ -18,6 +18,7 @@ FROM public.ecr.aws/sam/build-python3.10@sha256:e78695db10ca8cb129e59e30f7dc9789
 # Install the project into `/app`
 WORKDIR /app
 
+
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
 
