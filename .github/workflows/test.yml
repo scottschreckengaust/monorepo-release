@@ -24,7 +24,7 @@ jobs:
     permissions:
       contents: read
     outputs:
-      python-packages: ${{ steps.find-python-packages.outputs.packages }}
+      python-packages: ${{ steps.find-python-packages.outputs.packages}}
       node-packages: ${{ steps.find-node-packages.outputs.packages }}
       container-projects: ${{ steps.find-container-projects.outputs.images }}
       all-modified-directories: ${{ steps.modified-directories.outputs.all_modified_files }}
