@@ -38,6 +38,7 @@ jobs:
 
       - name: Find Python packages
         id: find-python-packages
+        if: hashFiles('/src/**/pyproject.toml')
         working-directory: src
         run: |
           PACKAGES=$(find . -name pyproject.toml -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
@@ -45,6 +46,7 @@ jobs:
 
       - name: Find Node packages
         id: find-node-packages
+        if: hashFiles('/src/**/package.json')
         working-directory: src
         run: |
           PACKAGES=$(find . -name package.json -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
@@ -52,6 +54,7 @@ jobs:
       
       - name: Find Container Projects
         id: find-container-projects
+        if: hashFiles('/src/**/Dockerfile')
         working-directory: src
         run: |
           IMAGES=$(find . -name Dockerfile -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
