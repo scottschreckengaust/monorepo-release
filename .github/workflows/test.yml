@@ -35,7 +35,12 @@ jobs:
           fetch-depth: 2
           submodules: true
           persist-credentials: false
-
+      - name: List files
+        id: list-files
+        run: |
+          echo "::group::Files"
+          find . -type f -print0 | xargs -0 ls -l
+          echo "::endgroup::"
       - name: Find Python packages
         id: find-python-packages
         if: hashFiles('/src/**/pyproject.toml')
