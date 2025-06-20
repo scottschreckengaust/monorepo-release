@@ -78,6 +78,8 @@ jobs:
           echo "Debugging Outputs"
 
           echo "::group::Python Packages"
+          echo "CONCLUSION: ${{ steps.find-python-packages.conclusion }}"
+          echo "OUTCOME: ${{ steps.find-python-packages.outcome }}"
           echo "${{ steps.find-python-packages.outputs.packages }}"
           echo "::endgroup::"
           echo "::group::Node Packages"
