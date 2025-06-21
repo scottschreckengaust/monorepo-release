@@ -1,6 +1,6 @@
 on:
   push:
-  workflow_dispatch:
+  pull_request:
 permissions:
     actions: none
     attestations: none
@@ -51,7 +51,6 @@ jobs:
         run: |
           PACKAGES=$(find . -name pyproject.toml -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
-
       - name: Find Node packages
         id: find-node-packages
         if: hashFiles(format('{0}/**/package.json', env.SRC_DIR))
@@ -59,7 +58,6 @@ jobs:
         run: |
           PACKAGES=$(find . -name package.json -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT      
-      
       - name: Find Container Projects
         id: find-container-projects
         if: hashFiles(format('{0}/**/Dockerfile', env.SRC_DIR))
@@ -67,7 +65,6 @@ jobs:
         run: |
           IMAGES=$(find . -name Dockerfile -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
           echo "images=$IMAGES" >> $GITHUB_OUTPUT      
-      
       - name: Find Modified Directories
         id: modified-directories
         if: hashFiles(format('{0}', env.SRC_DIR))
@@ -79,15 +76,11 @@ jobs:
           json: true
           escape_json: true
           matrix: true
-
       - name: Debug
         id: debug
         run: |
           echo "Debugging Outputs"
-
           echo "::group::Python Packages"
-          echo "CONCLUSION: ${{ steps.find-python-packages.conclusion }}"
-          echo "OUTCOME: ${{ steps.find-python-packages.outcome }}"
           echo "${{ steps.find-python-packages.outputs.packages }}"
           echo "::endgroup::"
           echo "::group::Node Packages"
@@ -119,6 +112,13 @@ jobs:
           echo "::group::Dockerfile"
           cat "${{ format('{0}/{1}/Dockerfile', env.SRC_DIR, matrix.all-modified-directories) }}"
           echo "::endgroup::"
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -f ref=${{ github.ref }} \
+            -f inputs[working-directory]=${{ format('{0}/{1}', env.SRC_DIR, matrix.all-modified-directories) }}
+            /repos/${{ github.repository }}/actions/workflows/docker.yml/dispatches
       - name: Python
         id: exists-python
         if: hashFiles(format('{0}/{1}/pyproject.toml', env.SRC_DIR, matrix.all-modified-directories))
