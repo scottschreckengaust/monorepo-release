@@ -5,11 +5,6 @@ on:
         description: 'The working directory to run the workflow in'
         required: true
         type: string
-      version:
-        default: ''
-        description: 'The version to associate to the image'
-        type: string
-        required: false
 permissions:
     actions: none
     attestations: none
