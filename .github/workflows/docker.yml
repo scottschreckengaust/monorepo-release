@@ -1,7 +1,11 @@
 on:
   workflow_dispatch:
     inputs:
-      working-directory:
+      source-directory:
+        description: 'The working directory to run the workflow in'
+        required: true
+        type: string
+      image-name:
         description: 'The working directory to run the workflow in'
         required: true
         type: string
@@ -24,7 +28,7 @@ permissions:
     
 jobs:
   build:
-    name: build ${{ inputs.working-directory }} (${{ matrix.platform }})
+    name: build ${{ inputs.image-name }} (${{ matrix.platform }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -35,9 +39,9 @@ jobs:
           submodules: true
           persist-credentials: false
       # - name: Check for a Dockerfile
-      #   if: ! ${{ hashFiles(format('{0}/Dockerfile', inputs.working-directory)) }}
+      #   if: ! ${{ hashFiles(format('{0}/Dockerfile', inputs.image-name)) }}
       #   run: |
-      #     echo "::warning::No Dockerfile found in ${{ inputs.working-directory }}. Failing build."
+      #     echo "::warning::No Dockerfile found in ${{ inputs.image-name }}. Failing build."
       #     exit 1
       - name: Prepare
         run: |
@@ -47,7 +51,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
-          images: ${{ inputs.working-directory }}
+          images: ${{ inputs.image-name }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -58,17 +62,17 @@ jobs:
           buildkitd-flags: --debug
       - name: Build and push by digest
         id: build
-        if: hashFiles(format('{0}/Dockerfile', inputs.working-directory))
+        if: hashFiles(format('{0}/{1}/Dockerfile', inputs.source-directory, inputs.image-name))
         uses: docker/build-push-action@v6
         with:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ inputs.working-directory }}
+          tags: ${{ inputs.image-name }}
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          context: ${{ inputs.working-directory }}
-          file: ${{ inputs.working-directory }}/Dockerfile
+          context: ${{ inputs.source-directory }}/${{ inputs.image-name }}
+          file: ${{ inputs.source-directory }}/${{ inputs.image-name }}/Dockerfile
           outputs: type=image,push-by-digest=true,name-canonical=true
       - name: Export digest
         run: |
