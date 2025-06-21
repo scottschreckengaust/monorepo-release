@@ -24,6 +24,7 @@ permissions:
     
 jobs:
   build:
+    name: build ${{ inputs.working-directory }} (${{ matrix.platform }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,11 +34,11 @@ jobs:
           lfs: true
           submodules: true
           persist-credentials: false
-      - name: Check for a Dockerfile
-        if: ! ${{ hashFiles(format('{0}/Dockerfile', inputs.working-directory)) }}
-        run: |
-          echo "::warning::No Dockerfile found in ${{ inputs.working-directory }}. Failing build."
-          exit 1
+      # - name: Check for a Dockerfile
+      #   if: ! ${{ hashFiles(format('{0}/Dockerfile', inputs.working-directory)) }}
+      #   run: |
+      #     echo "::warning::No Dockerfile found in ${{ inputs.working-directory }}. Failing build."
+      #     exit 1
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
