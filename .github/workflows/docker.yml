@@ -1,3 +1,4 @@
+run-name: docker (${{ inputs.image-name }})
 on:
   workflow_dispatch:
     inputs:
