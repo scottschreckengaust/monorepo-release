@@ -107,6 +107,8 @@ jobs:
           persist-credentials: false
       - name: Docker
         id: exists-dockerfile
+        env:
+          GH_TOKEN: ${{ github.token }}
         if: hashFiles(format('{0}/{1}/Dockerfile', env.SRC_DIR, matrix.all-modified-directories))
         run: |
           echo "::group::Dockerfile"
