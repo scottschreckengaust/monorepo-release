@@ -2,6 +2,11 @@
 on:
   push:
   workflow_dispatch:
+    inputs:
+      push:
+        default: true
+        type: boolean
+        required: false
 permissions:
     actions: none
     attestations: none
@@ -38,6 +43,8 @@ jobs:
       statuses: none
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}'"
       - id: clear-space
         uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@feature/action-to-make-more-space
       - name: Step to demonstrate how to access outputs (no need for this)
