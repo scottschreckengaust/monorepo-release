@@ -43,10 +43,20 @@ jobs:
       statuses: none
     runs-on: ubuntu-latest
     steps:
-      - if: fromJson(inputs.push) != ''
-        name: Test
+      - run: |
+          echo "::group::GITHUB object"
+          echo "${{ toJson(github) }}"
+          echo "::endgroup::"
+          echo "::group::INPUTS object"
+          echo "${{ toJson(inputs) }}"
+          echo "::endgroup::"
+      - if: github.event_name == 'workflow_dispatch'
+        name: Inputs
         run: |
-          echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}' ${{ fromJson(inputs.push) == 'false' && '' || '--dry-run'  }}"
+          echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}'"
+          echo " TRUE ${{ fromJson(inputs.push) == 'true' && ''  }}"
+          echo "FALSE ${{ fromJson(inputs.push) == 'false' && '--dry-run'  }}"
+
       # - id: clear-space
       #   uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@main
       # - name: Step to demonstrate how to access outputs (no need for this)
