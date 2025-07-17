@@ -43,7 +43,8 @@ jobs:
       statuses: none
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - if: input.push != ''
+        run: |
           echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}'"
       # - id: clear-space
       #   uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@main
