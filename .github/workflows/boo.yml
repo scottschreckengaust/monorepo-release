@@ -54,7 +54,7 @@ jobs:
       - if: github.event_name == 'push'
         name: Inputs PUSH
         run: |
-          echo "PUSH \"${{ inputs }}\""
+          echo "PUSH \"${{ inputs == toJson({}) }}\""
 
       - if: github.event_name == 'workflow_dispatch'
         name: Inputs WORKFLOW_DISPATCH
