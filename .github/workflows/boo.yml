@@ -55,18 +55,6 @@ jobs:
         name: Inputs PUSH
         run: |
           echo "INPUTS \"${{ inputs }}\""
-          echo "TOJSON \"${{ toJson(inputs) }}\""
-          echo "FROMJSON \"${{ fromJson(toJson(inputs)) }}\""
-
-          echo "TRUE \"${{ true == true }}\""
-          echo "FALSE \"${{ true == false }}\""
-
-          echo "TEST \"${{ toJson(inputs) == toJson('{}') }}\""
-
-
-
-          echo "EXAMPLE \"${{ toJson('{}') }}\""
-          echo "NAN \"${{ isNaN(NaN) }}\""
 
 
       - if: github.event_name == 'workflow_dispatch'
