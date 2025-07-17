@@ -57,7 +57,10 @@ jobs:
           echo "INPUTS \"${{ inputs }}\""
           echo "TOJSON \"${{ toJson(inputs) }}\""
           echo "FROMJSON \"${{ fromJson(toJson(inputs)) }}\""
+
+          echo "EXAMPLE \"${{ toJson('{}') }}\""
           # echo "PUSH \"${{ inputs == toJson('null') }}\""
+
 
       - if: github.event_name == 'workflow_dispatch'
         name: Inputs WORKFLOW_DISPATCH
