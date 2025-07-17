@@ -51,19 +51,14 @@ jobs:
           echo "${{ toJson(inputs) }}"
           echo "::endgroup::"
 
-      - if: github.event_name == 'push'
-        name: Inputs PUSH
+      - name: Inputs
         run: |
-          echo "INPUTS \"${{ (inputs && true) }}\""
-          echo "${{ github.event_name == 'push' && inputs && 'PUSH' || 'OTHER' }}"
+          echo "${{ github.event_name == 'push' && inputs && 'PUSH' || github.event_name }}"
 
       - if: github.event_name == 'workflow_dispatch'
-        name: Inputs WORKFLOW_DISPATCH
+        name: Inputs
+        id: wd
         run: |
-          echo "INPUTS \"${{ (inputs && true) }}\""
-
-          echo "This is the 'inputs' value '${{ fromJson(inputs) }}'"
-          echo " TRUE ${{ fromJson(inputs.push) == 'true'  && ''           }}"
           echo "FALSE ${{ fromJson(inputs.push) == 'false' && '--dry-run'  }}"
 
       # - id: clear-space
