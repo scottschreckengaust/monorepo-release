@@ -58,6 +58,9 @@ jobs:
           echo "TOJSON \"${{ toJson(inputs) }}\""
           echo "FROMJSON \"${{ fromJson(toJson(inputs)) }}\""
 
+          echo "TRUE \"${{ true == true }}\""
+          echo "FALSE \"${{ true == false }}\""
+
           echo "EXAMPLE \"${{ toJson('{}') }}\""
           # echo "PUSH \"${{ inputs == toJson('null') }}\""
 
