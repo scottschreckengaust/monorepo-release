@@ -55,7 +55,7 @@ jobs:
         name: Inputs PUSH
         run: |
           echo "This is the 'inputs' value '${{ fromJson(inputs) }}'"
-          echo " TRUE ${{ toJson(inputs) == {}             && '' }}"
+          echo " TRUE ${{ inputs == ''             && '' }}"
 
       - if: github.event_name == 'workflow_dispatch'
         name: Inputs WORKFLOW_DISPATCH
