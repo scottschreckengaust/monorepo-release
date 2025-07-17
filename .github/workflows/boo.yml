@@ -45,13 +45,13 @@ jobs:
     steps:
       - run: |
           echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}'"
-      - id: clear-space
-        uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@feature/action-to-make-more-space
-      - name: Step to demonstrate how to access outputs (no need for this)
-        id: echo-output
-        run: |
-          echo "before: ${BEFORE}"
-          echo "after: ${AFTER}"
-        env:
-          BEFORE: ${{ steps.clear-space.outputs.before}}
-          AFTER: ${{ steps.clear-space.outputs.after}}
+      # - id: clear-space
+      #   uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@main
+      # - name: Step to demonstrate how to access outputs (no need for this)
+      #   id: echo-output
+      #   run: |
+      #     echo "before: ${BEFORE}"
+      #     echo "after: ${AFTER}"
+      #   env:
+      #     BEFORE: ${{ steps.clear-space.outputs.before}}
+      #     AFTER: ${{ steps.clear-space.outputs.after}}
