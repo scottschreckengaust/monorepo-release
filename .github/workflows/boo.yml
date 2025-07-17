@@ -53,13 +53,8 @@ jobs:
 
       - name: Inputs
         run: |
-          echo "${{ github.event_name == 'push' && inputs && 'PUSH' || ( fromJson(inputs.push) == false && 'PUSHED FALSE' || 'PUSHED TRUE' ) }}"
+          echo "${{ github.event_name == 'push' && inputs && '' || ( fromJson(inputs.push) == false && '--dry-run' || '' ) }}"
 
-      - if: github.event_name == 'workflow_dispatch'
-        name: Inputs
-        id: wd
-        run: |
-          echo "FALSE ${{ fromJson(inputs.push) == 'false' && '--dry-run'  }}"
 
       # - id: clear-space
       #   uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@main
