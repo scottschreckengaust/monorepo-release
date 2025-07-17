@@ -1,0 +1,50 @@
+---
+on:
+  push:
+  workflow_dispatch:
+permissions:
+    actions: none
+    attestations: none
+    checks: none
+    contents: none
+    deployments: none
+    discussions: none
+    id-token: none
+    issues: none
+    models: none
+    packages: none
+    pages: none
+    pull-requests: none
+    repository-projects: none
+    security-events: none
+    statuses: none
+jobs:
+  debug:
+    permissions: 
+      actions: none
+      attestations: none
+      checks: none
+      contents: none
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: none
+      pages: none
+      pull-requests: none
+      repository-projects: none
+      security-events: none
+      statuses: none
+    runs-on: ubuntu-latest
+    steps:
+      - id: clear-space
+        uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@feature/action-to-make-more-space
+      - name: Step to demonstrate how to access outputs (no need for this)
+        id: echo-output
+        run: |
+          echo "before: ${BEFORE}"
+          echo "after: ${AFTER}"
+        env:
+          BEFORE: ${{ steps.clear-space.outputs.before}}
+          AFTER: ${{ steps.clear-space.outputs.after}}
