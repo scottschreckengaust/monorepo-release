@@ -61,6 +61,10 @@ jobs:
           echo "TRUE \"${{ true == true }}\""
           echo "FALSE \"${{ true == false }}\""
 
+          echo "TEST \"${{ toJson(inputs) == toJson('{}') }}\""
+
+
+
           echo "EXAMPLE \"${{ toJson('{}') }}\""
           # echo "PUSH \"${{ inputs == toJson('null') }}\""
 
