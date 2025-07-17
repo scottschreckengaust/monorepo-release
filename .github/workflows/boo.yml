@@ -46,7 +46,7 @@ jobs:
       - if: inputs.push != ''
         name: Test
         run: |
-          echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}' ${{ (inputs.push) && '' || '--dry-run'  }}"
+          echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}' ${{ !(inputs.push) && '' || '--dry-run'  }}"
       # - id: clear-space
       #   uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@main
       # - name: Step to demonstrate how to access outputs (no need for this)
