@@ -53,7 +53,7 @@ jobs:
 
       - name: Inputs
         run: |
-          echo "${{ github.event_name == 'push' && inputs && 'PUSH' || github.event_name }}"
+          echo "${{ github.event_name == 'push' && inputs && 'PUSH' || ( fromJson(inputs.push) == false && 'PUSHED FALSE' || 'PUSHED TRUE' ) }}"
 
       - if: github.event_name == 'workflow_dispatch'
         name: Inputs
