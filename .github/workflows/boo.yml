@@ -53,7 +53,7 @@ jobs:
 
       - name: Inputs
         run: |
-          echo "${{ github.event_name == 'push' && inputs && '' || ( fromJson(inputs.push) == false && '--dry-run' || '' ) }}"
+          echo "${{ github.event_name == 'push' && inputs && '' || ( github.event_name == 'workflow_dispatch' && inputs && fromJson(inputs.push) == false && '--dry-run' || '' ) }}"
 
 
       # - id: clear-space
