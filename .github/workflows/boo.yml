@@ -43,7 +43,7 @@ jobs:
       statuses: none
     runs-on: ubuntu-latest
     steps:
-      - if: input.push != ''
+      - if: inputs.push != ''
         run: |
           echo "This is the 'inputs.push' value '${{ fromJson(inputs.push) }}'"
       # - id: clear-space
