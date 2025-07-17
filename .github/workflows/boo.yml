@@ -55,7 +55,7 @@ jobs:
         name: Inputs PUSH
         run: |
           echo "INPUTS \"${{ (inputs && true) }}\""
-          echo "EMPTY \"${{ inputs && '' }}\""
+          echo "${{ github.event_name == 'push' && inputs && '' }}"
 
       - if: github.event_name == 'workflow_dispatch'
         name: Inputs WORKFLOW_DISPATCH
