@@ -55,6 +55,16 @@ jobs:
         run: |
           echo "${{ github.event_name == 'push' && inputs && '' || ( github.event_name == 'workflow_dispatch' && inputs && fromJson(inputs.push) == false && '--dry-run' || '' ) }}"
 
+      - name: Checker
+        id: gamer
+        uses: scottschreckengaust/mcp/.github/actions/build-and-push-container-image@main
+        with:
+          image: scott-mcp-server
+          version: 0.0.0
+          public-erc-role-to-assume: 'arn:aws:iam:123456789012:role/AssumeRoleForPublicECR'
+          public-erc-registry-alias: 'a1c4e6g8'
+          public-erc-aws-region: 'us-east-1'
+          push: false
 
       # - id: clear-space
       #   uses: awslabs/mcp/.github/actions/clear-space-ubuntu-latest-agressively@main
